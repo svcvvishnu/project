@@ -63,6 +63,7 @@ public interface CreateTableQueries {
                 FileLocation varchar(255) NOT NULL,
                 CaptureDate DATETIME(6),
                 LocationID int,
+                PRIMARY KEY (MediaID),
                 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
             );""";
     String MEDIA_TAGS = """
@@ -70,6 +71,7 @@ public interface CreateTableQueries {
                 TagID int NOT NULL AUTO_INCREMENT,
                 MediaID int,
                 Tag varchar(255),
+                PRIMARY KEY (TagID),
                 FOREIGN KEY (MediaID) REFERENCES Media(MediaID)
             );""";
     String MEDIA_PERSONS = """
@@ -77,6 +79,7 @@ public interface CreateTableQueries {
                 MediaPersonID int NOT NULL AUTO_INCREMENT,
                 MediaID int,
                 PersonID int,
+                PRIMARY KEY (MediaPersonID),
                 FOREIGN KEY (MediaID) REFERENCES Media(MediaID),
                 FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
             );""";

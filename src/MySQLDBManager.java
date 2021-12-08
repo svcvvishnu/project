@@ -8,14 +8,27 @@ public class MySQLDBManager {
             Class.forName("com.mysql.cj.jdbc.Driver");
             this.connection=DriverManager.getConnection(
                     "jdbc:mysql://localhost:3306/project?useSSL=false","vishnu","password");
+            createTables();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        createTables();
+
     }
 
-    private void createTables() {
-
+    private void createTables() throws SQLException {
+        Statement stmt = this.connection.createStatement();
+        stmt.executeUpdate(CreateTableQueries.PERSONS);
+        stmt.executeUpdate(CreateTableQueries.PERSON_OCCUPATIONS);
+        stmt.executeUpdate(CreateTableQueries.PERSON_REFERENCES);
+        stmt.executeUpdate(CreateTableQueries.PERSON_NOTES);
+        stmt.executeUpdate(CreateTableQueries.PARENT_CHILD_RELATIONS);
+        stmt.executeUpdate(CreateTableQueries.MARRIED_RELATIONS);
+        stmt.executeUpdate(CreateTableQueries.DIVORCE_RELATIONS);
+        stmt.executeUpdate(CreateTableQueries.LOCATION);
+        stmt.executeUpdate(CreateTableQueries.MEDIA);
+        stmt.executeUpdate(CreateTableQueries.MEDIA_TAGS);
+        stmt.executeUpdate(CreateTableQueries.MEDIA_PERSONS);
+        stmt.close();
     }
 
     public void execute() throws SQLException {
@@ -25,7 +38,7 @@ public class MySQLDBManager {
             System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getDate(3));
     }
 
-    public static void main(String args[]){
+    public static void main(String[] args){
         MySQLDBManager mgr  = new MySQLDBManager();
         try {
             mgr.addPerson("Test");
