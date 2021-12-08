@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.List;
 
-public class PersonIdentity {
+public class PersonIdentityCp {
     String name;
     int id;
     boolean isRoot;
@@ -13,7 +13,7 @@ public class PersonIdentity {
     String occupation;
     List<String> references;
     List<String> notes;
-    public PersonIdentity(String name, int id) {
+    public PersonIdentityCp(String name, int id) {
         this.name = name;
         this.id = id;
         this.isRoot = false;
