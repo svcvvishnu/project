@@ -93,23 +93,10 @@ public class MySQLDBManager {
         return null;
     }
 
-    public int updatePersonMetadata(PersonFields field, String value) {
+    public int updatePersonMetadata(String value, String query) {
         try {
-            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_PERSON_TABLE);
-            ps1.setString(1, field.name());
-            ps1.setString(2,value);
-            return ps1.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
-    public int updatePersonMetadata(PersonFields field, Date value) {
-        try {
-            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_PERSON_TABLE);
-            ps1.setString(1, field.name());
-            ps1.setDate(2, value);
+            PreparedStatement ps1 = connection.prepareStatement(query);
+            ps1.setString(1, value);
             return ps1.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -385,5 +372,24 @@ public class MySQLDBManager {
             return result;
         }
         return result;
+    }
+
+    public void clean() {
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0");
+            stmt.executeUpdate("TRUNCATE Persons");
+            stmt.executeUpdate("TRUNCATE PersonAttributes");
+            stmt.executeUpdate("TRUNCATE ParentChildRelations");
+            stmt.executeUpdate("TRUNCATE MarriedRelations");
+            stmt.executeUpdate("TRUNCATE DivorceRelations");
+            stmt.executeUpdate("TRUNCATE Media");
+            stmt.executeUpdate("TRUNCATE MediaAttributes");
+            stmt.executeUpdate("TRUNCATE MediaPersons");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
     }
 }

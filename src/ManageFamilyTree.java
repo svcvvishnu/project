@@ -16,20 +16,20 @@ public class ManageFamilyTree {
     }
 
     Boolean recordAttributes(int person_id, Map<String, String> attributes) {
-        if (dbManager.getPersonName(person_id) != null) throw new RuntimeException("No person with person identifier :" + person_id);
+        if (dbManager.getPersonName(person_id) == null) throw new RuntimeException("No person with person identifier :" + person_id);
         int count = 0;
         for (var entry : attributes.entrySet()) {
             switch (entry.getKey()) {
                 case "DOB" -> {
-                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOB, getDate(entry.getValue()));
+                    dbManager.updatePersonMetadata(getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOB);
                     count++;
                 }
                 case "DOD" -> {
-                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOD, getDate(entry.getValue()));
+                    dbManager.updatePersonMetadata(getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOD);
                     count++;
                 }
                 case "Gender" -> {
-                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.GENDER, entry.getValue());
+                    dbManager.updatePersonMetadata(entry.getValue(), UpdateQueries.UPDATE_PERSON_GENDER);
                     count++;
                 }
                 case "Occupation" -> {
@@ -45,20 +45,14 @@ public class ManageFamilyTree {
         return Boolean.FALSE;
     }
 
-    private java.sql.Date getDate(String value) {
+    private String getDate(String value) {
         String[] split = value.split("/");
         if (split.length != 3) throw new RuntimeException("Invalid Date Format");
         if (split[0].equals("")) split[0] = "01";
         if (split[1].equals("")) split[1] = "01";
 
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        return split[0] + "-" + split[1] + "-" + split[2];
 
-        try {
-            java.util.Date utilDate = format.parse(split[2] + "/" + split[1] + "/" + split[0]);
-            return new java.sql.Date(utilDate.getTime());
-        } catch (ParseException e) {
-            throw new RuntimeException("Invalid date exception");
-        }
     }
 
     Boolean recordReference(int personId, String reference) {
@@ -82,6 +76,7 @@ public class ManageFamilyTree {
 
     Boolean recordDissolution(int partner1, int partner2) {
         if (!dbManager.isMarried(partner1, partner2)) return false;
+        //remove the married record from table
         return dbManager.insertDissolution(partner1, partner2);
     }
 }

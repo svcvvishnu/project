@@ -1,19 +1,21 @@
+import java.io.File;
 import java.util.*;
 
-public class Geneology {
+public class Genealogy {
 
     MySQLDBManager mgr;
     ManageFamilyTree family;
     ManageMediaArchive media;
     Reporting report;
 
-    public Geneology() {
+    public Genealogy() {
         mgr = new MySQLDBManager();
         family = new ManageFamilyTree(mgr);
         media = new ManageMediaArchive(mgr);
         report = new Reporting(mgr);
     }
 
+    //Family Tree
     public PersonIdentity addPerson(String name) {
         return new PersonIdentity(family.addPerson(name));
     }
@@ -43,6 +45,7 @@ public class Geneology {
     }
 
 
+    //Media
     public FileIdentifier addMediaFile(String fileLocation) {
         return new FileIdentifier(media.addMediaFile(fileLocation));
     }
@@ -105,8 +108,12 @@ public class Geneology {
         return report.notesAndReferences(personIdentity.getId());
     }
 
-    public Set<Integer> findMediaByTag(String tag, String startDate, String endDate) {
-        return report.findMediaByTag(tag, startDate, endDate);
+    public Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
+        Set<FileIdentifier> ids = new HashSet<>();
+        for (Integer id : report.findMediaByTag(tag, startDate, endDate)) {
+            ids.add(new FileIdentifier(id));
+        }
+        return ids;
     }
 
     public Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
@@ -135,5 +142,9 @@ public class Geneology {
             ids.add(new FileIdentifier(id));
         }
         return ids.stream().toList();
+    }
+
+    public void cleanData() {
+        mgr.clean();
     }
 }

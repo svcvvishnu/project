@@ -3,14 +3,14 @@ public interface CreateTableQueries {
             CREATE TABLE IF NOT EXISTS Persons (
                 PersonID int NOT NULL AUTO_INCREMENT,
                 PersonName varchar(255) NOT NULL,
-                DOB DATETIME(6),
-                DOD DATETIME(6),
+                DOB DATETIME,
+                DOD DATETIME,
                 Gender varchar(255),
                 PRIMARY KEY (PersonID)
             );""";
 
     String PERSON_ATTRIBUTES = """
-            CREATE TABLE PersonAttributes (
+            CREATE TABLE IF NOT EXISTS PersonAttributes (
             	PersonID int,
                 AttributeName varchar(255),
                 AttributeValue varchar(255),
@@ -47,7 +47,7 @@ public interface CreateTableQueries {
                 PRIMARY KEY (MediaID)
             );""";
     String MEDIA_RELATIONS = """
-            CREATE TABLE MediaAttributes (
+            CREATE TABLE IF NOT EXISTS MediaAttributes (
               	MediaID int,
                 AttributeName varchar(255),
                 AttributeValue varchar(255),

@@ -15,7 +15,7 @@ public interface SelectQueries {
             select * from cte where ChildId = ?;
             """;
 
-    String GET_PERSON_BY_NAME = "select PersonID from Persons where name = ?";
+    String GET_PERSON_BY_NAME = "select PersonID from Persons where PersonName = ?";
     String GET_PERSON_BY_ID = "select PersonName from Persons where PersonID = ?";
     String GET_MEDIA_BY_LOCATION = "select MediaID from Media where FileLocation = ?";
     String GET_LOCATION_BY_MEDIA = "select FileLocation from Media where MediaID = ?";
