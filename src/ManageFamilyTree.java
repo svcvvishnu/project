@@ -1,20 +1,9 @@
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ManageFamilyTree {
-
-    FamilyNode root;
-    Map<Integer, FamilyNode> nodeById;
-    int seqNumber;
-
     MySQLDBManager dbManager;
 
     public ManageFamilyTree(MySQLDBManager dbManager) {
-        root = new FamilyNode(new PersonIdentity("Root", getNextPersonId()));
-        root.person.setIsRoot();
-        nodeById = new HashMap<>();
-        seqNumber = 1;
         this.dbManager = dbManager;
     }
 
@@ -30,27 +19,19 @@ public class ManageFamilyTree {
         for (var entry : attributes.entrySet()) {
             switch (entry.getKey()) {
                 case "DOB" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOB, entry.getValue());
                     count++;
                 }
                 case "DOD" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOD, entry.getValue());
+                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOD, entry.getValue());
                     count++;
                 }
                 case "Gender" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.GENDER, entry.getValue());
+                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.GENDER, entry.getValue());
                     count++;
                 }
                 case "Occupation" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
-                    count++;
-                }
-                case "Reference" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
-                    count++;
-                }
-                case "Note" -> {
-                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    dbManager.updatePersonRelations(person_id, entry.getValue(), "Occupation", InsertQueries.PERSON_OCCUPATION);
                     count++;
                 }
                 case "default" -> {
@@ -62,29 +43,27 @@ public class ManageFamilyTree {
         return Boolean.FALSE;
     }
 
-    Boolean recordReference(PersonIdentity person, String reference) {
-        return person.addReference(reference);
+    Boolean recordReference(int personId, String reference) {
+        int res = dbManager.updatePersonRelations(personId, reference, "Reference", InsertQueries.PERSON_REFERENCES);
+        return res == 1;
     }
 
-    Boolean recordNote(PersonIdentity person, String note) {
-        return person.addNote(note);
+    Boolean recordNote(int personId, String note) {
+        int res = dbManager.updatePersonRelations(personId, note, "Note", InsertQueries.PERSON_NOTES);
+        return res == 1;
     }
 
-    Boolean recordChild(PersonIdentity parent, PersonIdentity child) {
-        if (nodeById.get(child.getId()).parents.size() == 2) return Boolean.FALSE;
-        FamilyNode parentNode = nodeById.get(child.getId());
-        return Boolean.TRUE;
+    Boolean recordChild(int parent, int child) {
+        return dbManager.updateParentChildRel(parent, child);
     }
 
-    Boolean recordPartnering(PersonIdentity partner1, PersonIdentity partner2) {
-        return Boolean.TRUE;
+    Boolean recordPartnering(int partner1, int partner2) {
+        if (dbManager.isMarried(partner1) || dbManager.isMarried(partner2)) return false;
+        return dbManager.insertMarriage(partner1, partner2);
     }
 
-    Boolean recordDissolution(PersonIdentity partner1, PersonIdentity partner2) {
-        return Boolean.TRUE;
-    }
-
-    private int getNextPersonId() {
-        return seqNumber++;
+    Boolean recordDissolution(int partner1, int partner2) {
+        if (!dbManager.isMarried(partner1, partner2)) return false;
+        return dbManager.insertDissolution(partner1, partner2);
     }
 }

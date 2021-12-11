@@ -9,24 +9,14 @@ public interface CreateTableQueries {
                 PRIMARY KEY (PersonID)
             );""";
 
-    String PERSON_OCCUPATIONS = """
-            CREATE TABLE IF NOT EXISTS PersonOccupations (
-                PersonID int,
-                Occupation varchar(255),
+    String PERSON_ATTRIBUTES = """
+            CREATE TABLE PersonAttributes (
+            	PersonID int,
+                AttributeName varchar(255),
+                AttributeValue varchar(255),
                 FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
-            );""";
-    String PERSON_REFERENCES = """
-            CREATE TABLE IF NOT EXISTS PersonReferences (
-                PersonID int,
-                SourceMaterial varchar(255),
-                FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
-            );""";
-    String PERSON_NOTES = """
-            CREATE TABLE IF NOT EXISTS PersonNotes (
-                PersonID int,
-                Note varchar(255),
-                FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
-            );""";
+            );
+            """;
     String PARENT_CHILD_RELATIONS = """
             CREATE TABLE IF NOT EXISTS ParentChildRelations (
                 ParentID int,

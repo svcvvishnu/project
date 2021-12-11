@@ -1,22 +1,29 @@
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Reporting {
 
-    PersonIdentity findPerson(String name) {
-        return null;
+    MySQLDBManager dbManager;
+    public Reporting(MySQLDBManager dbManager) {
+        this.dbManager = dbManager;
     }
 
-    FileIdentifier findMediaFile(String name) {
-        return null;
+    int findPerson(String name) {
+        return dbManager.getPerson(name);
     }
 
-    String findName(PersonIdentity id) {
-        return null;
+    int findMediaFile(String name) {
+        return dbManager.getMediaFile(name);
     }
 
-    String findMediaFile(FileIdentifier field) {
-        return null;
+    String findName(int id) {
+        return dbManager.getPersonName(id);
+    }
+
+    String findMediaFile(int id) {
+        return dbManager.getMediaFile(id);
     }
 
     BiologicalRelation findRelation(PersonIdentity person1, PersonIdentity person2) {
@@ -47,7 +54,12 @@ public class Reporting {
         return null;
     }
 
-    List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity person) {
-        return null;
+    List<Integer> findBiologicalFamilyMedia(int person) {
+        List<Integer> children =  dbManager.getImmediateChildren(person);
+        Set<Integer> mediaIds = new HashSet<>();
+        for (Integer child : children) {
+            mediaIds.addAll(dbManager.getAllPersonMedia(child));
+        }
+        return mediaIds.stream().toList();
     }
 }
