@@ -1,6 +1,4 @@
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Geneology {
 
@@ -16,97 +14,126 @@ public class Geneology {
         report = new Reporting(mgr);
     }
 
-    public int addPerson(String name) {
-        return family.addPerson(name);
+    public PersonIdentity addPerson(String name) {
+        return new PersonIdentity(family.addPerson(name));
     }
 
-    public boolean recordAttributes(int id, Map<String, String> attributes) {
-        return family.recordAttributes(id, attributes);
+    public boolean recordAttributes(PersonIdentity personIdentity, Map<String, String> attributes) {
+        return family.recordAttributes(personIdentity.getId(), attributes);
     }
 
-    public boolean recordReference(int id, String reference) {
-        return family.recordReference(id, reference);
+    public boolean recordReference(PersonIdentity personIdentity, String reference) {
+        return family.recordReference(personIdentity.getId(), reference);
     }
 
-    public boolean recordNote(int id, String note) {
-        return family.recordNote(id, note);
+    public boolean recordNote(PersonIdentity personIdentity, String note) {
+        return family.recordNote(personIdentity.getId(), note);
     }
 
-    public  boolean recordChild(int parentId, int childId) {
-        return family.recordChild(parentId, childId);
+    public boolean recordChild(PersonIdentity parent, PersonIdentity child) {
+        return family.recordChild(parent.getId(), child.getId());
     }
 
-    public boolean recordPartnering(int partner1, int partner2) {
-        return family.recordPartnering(partner1, partner2);
+    public boolean recordPartnering(PersonIdentity partner1, PersonIdentity partner2) {
+        return family.recordPartnering(partner1.getId(), partner2.getId());
     }
 
-    public boolean recordDissolution(int partner1, int partner2) {
-        return family.recordDissolution(partner1, partner2);
+    public boolean recordDissolution(PersonIdentity partner1, PersonIdentity partner2) {
+        return family.recordDissolution(partner1.getId(), partner2.getId());
     }
 
 
-    public  int addMediaFile(String fileLocation) {
-        return media.addMediaFile(fileLocation);
+    public FileIdentifier addMediaFile(String fileLocation) {
+        return new FileIdentifier(media.addMediaFile(fileLocation));
     }
 
-    public boolean recordMediaAttributes(int id, Map<String, String> attributes) {
-        return media.recordMediaAttributes(id, attributes);
+    public boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
+        return media.recordMediaAttributes(fileIdentifier.getId(), attributes);
     }
 
-    public boolean peopleInMedia(int id, List<Integer> people) {
+    public boolean peopleInMedia(FileIdentifier fileIdentifier, List<PersonIdentity> people) {
         //No duplicate Entries
-        return media.peopleInMedia(id, people);
+        List<Integer> ids = new ArrayList<>();
+        for (PersonIdentity pd : people) {
+            ids.add(pd.getId());
+        }
+        return media.peopleInMedia(fileIdentifier.getId(), ids);
     }
 
-    public boolean tagMedia(int id, String tag) {
-        return media.tagMedia(id, tag);
+    public boolean tagMedia(FileIdentifier fileIdentifier, String tag) {
+        return media.tagMedia(fileIdentifier.getId(), tag);
     }
 
-    public int findPerson(String name) {
-        return report.findPerson(name);
+    //Reporting
+    public PersonIdentity findPerson(String name) {
+        return new PersonIdentity(report.findPerson(name));
     }
 
-    public int findMediaFIle(String name) {
-        return report.findMediaFile(name);
+    public FileIdentifier findMediaFIle(String name) {
+        return new FileIdentifier(report.findMediaFile(name));
     }
 
-    public String findName(int id) {
-        return report.findName(id);
+    public String findName(PersonIdentity personIdentity) {
+        return report.findName(personIdentity.getId());
     }
 
-    public String findMediaFile(int id) {
-        return report.findMediaFile(id);
+    public String findMediaFile(FileIdentifier fileIdentifier) {
+        return report.findMediaFile(fileIdentifier.getId());
     }
 
-    public BiologicalRelation findRelation(int id1, int id2) {
+    public BiologicalRelation findRelation(PersonIdentity id1, PersonIdentity id2) {
         return null;
     }
 
-    public Set<Integer> descendents(int id, Integer generations) {
-        return report.descendents(id, generations);
+    public Set<PersonIdentity> descendents(PersonIdentity personIdentity, Integer generations) {
+        Set<PersonIdentity> ids = new HashSet<>();
+        for (Integer id : report.descendents(personIdentity.getId(), generations)) {
+            ids.add(new PersonIdentity(id));
+        }
+        return ids;
     }
 
-    public Set<Integer> ancestors(int id, Integer generations) {
-        return report.ancestors(id, generations);
+    public Set<PersonIdentity> ancestors(PersonIdentity personIdentity, Integer generations) {
+        Set<PersonIdentity> ids = new HashSet<>();
+        for (Integer id : report.ancestors(personIdentity.getId(), generations)) {
+            ids.add(new PersonIdentity(id));
+        }
+        return ids;
     }
 
-    public List<String> notesNAndReferences(int id) {
-        return report.notesAndReferences(id);
+    public List<String> notesNAndReferences(PersonIdentity personIdentity) {
+        return report.notesAndReferences(personIdentity.getId());
     }
 
     public Set<Integer> findMediaByTag(String tag, String startDate, String endDate) {
         return report.findMediaByTag(tag, startDate, endDate);
     }
 
-    public Set<Integer> findMediaByLocation(String location, String startDate, String endDate) {
-        return report.findMediaByLocation(location, startDate, endDate);
+    public Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
+        Set<FileIdentifier> ids = new HashSet<>();
+        for (Integer id : report.findMediaByLocation(location, startDate, endDate)) {
+            ids.add(new FileIdentifier(id));
+        }
+        return ids;
     }
 
-    public List<Integer> findIndividualsMedia(Set<Integer> people, String startDate, String endDate) {
-        return report.findIndividualsMedia(people, startDate, endDate);
+    public List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
+        Set<Integer> personIds = new HashSet<>();
+        for (PersonIdentity pd : people) {
+            personIds.add(pd.getId());
+        }
+        Set<FileIdentifier> ids = new HashSet<>();
+        for (Integer id : report.findIndividualsMedia(personIds, startDate, endDate)) {
+            ids.add(new FileIdentifier(id));
+        }
+        return ids.stream().toList();
     }
 
-    public List<Integer> findBiologicalFamilyMedia(int id) {
-        return report.findBiologicalFamilyMedia(id);
+    public List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity personIdentity) {
+        Set<FileIdentifier> ids = new HashSet<>();
+        for (Integer id : report.findBiologicalFamilyMedia(personIdentity.getId())) {
+            ids.add(new FileIdentifier(id));
+        }
+        return ids.stream().toList();
     }
 }
