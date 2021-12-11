@@ -1,6 +1,10 @@
 import java.sql.*;
 public class MySQLDBManager {
 
+    enum PersonFields
+    {
+        DOB, DOD, GENDER;
+    }
     Connection connection;
 
     public MySQLDBManager() {
@@ -83,6 +87,18 @@ public class MySQLDBManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int updatePersonAttribute(PersonFields field, String value) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_PERSON_TABLE);
+            ps1.setString(1, field.name());
+            ps1.setString(2,value);
+            return ps1.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public int getMediaFile(String name) {

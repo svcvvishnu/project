@@ -8,27 +8,58 @@ public class ManageFamilyTree {
     Map<Integer, FamilyNode> nodeById;
     int seqNumber;
 
-    public ManageFamilyTree() {
+    MySQLDBManager dbManager;
+
+    public ManageFamilyTree(MySQLDBManager dbManager) {
         root = new FamilyNode(new PersonIdentity("Root", getNextPersonId()));
         root.person.setIsRoot();
         nodeById = new HashMap<>();
         seqNumber = 1;
+        this.dbManager = dbManager;
     }
 
-    PersonIdentity addPerson(String name) {
-        PersonIdentity p = new PersonIdentity(name, getNextPersonId());
-        nodeById.put(p.getId(), new FamilyNode(p));
-        return p;
+    int addPerson(String name) {
+        if (dbManager.getPerson(name) != -1) throw new RuntimeException("There is already person with name :" + name);
+        dbManager.addPerson(name);
+        return dbManager.getPerson(name);
     }
 
-    Boolean recordAttributes(PersonIdentity person, Map<String, String> attributes) {
-        AtomicBoolean skipped = new AtomicBoolean(false);
-        attributes.forEach((key, value) -> {
-            if (!person.setAttribute(key, value)) {
-                skipped.set(true);
+    Boolean recordAttributes(int person_id, Map<String, String> attributes) {
+        if (dbManager.getPersonName(person_id) != null) throw new RuntimeException("No person with person identifier :" + person_id);
+        int count = 0;
+        for (var entry : attributes.entrySet()) {
+            switch (entry.getKey()) {
+                case "DOB" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    count++;
+                }
+                case "DOD" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOD, entry.getValue());
+                    count++;
+                }
+                case "Gender" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.GENDER, entry.getValue());
+                    count++;
+                }
+                case "Occupation" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    count++;
+                }
+                case "Reference" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    count++;
+                }
+                case "Note" -> {
+                    dbManager.updatePersonAttribute(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    count++;
+                }
+                case "default" -> {
+                    //no-op
+                }
             }
-        });
-        return Boolean.TRUE;
+        }
+        if (count == attributes.size()) return Boolean.TRUE;
+        return Boolean.FALSE;
     }
 
     Boolean recordReference(PersonIdentity person, String reference) {
