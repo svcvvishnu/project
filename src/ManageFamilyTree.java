@@ -1,3 +1,5 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 public class ManageFamilyTree {
@@ -19,11 +21,11 @@ public class ManageFamilyTree {
         for (var entry : attributes.entrySet()) {
             switch (entry.getKey()) {
                 case "DOB" -> {
-                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOB, entry.getValue());
+                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOB, getDate(entry.getValue()));
                     count++;
                 }
                 case "DOD" -> {
-                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOD, entry.getValue());
+                    dbManager.updatePersonMetadata(MySQLDBManager.PersonFields.DOD, getDate(entry.getValue()));
                     count++;
                 }
                 case "Gender" -> {
@@ -41,6 +43,22 @@ public class ManageFamilyTree {
         }
         if (count == attributes.size()) return Boolean.TRUE;
         return Boolean.FALSE;
+    }
+
+    private java.sql.Date getDate(String value) {
+        String[] split = value.split("/");
+        if (split.length != 3) throw new RuntimeException("Invalid Date Format");
+        if (split[0].equals("")) split[0] = "01";
+        if (split[1].equals("")) split[1] = "01";
+
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+        try {
+            java.util.Date utilDate = format.parse(split[2] + "/" + split[1] + "/" + split[0]);
+            return new java.sql.Date(utilDate.getTime());
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid date exception");
+        }
     }
 
     Boolean recordReference(int personId, String reference) {

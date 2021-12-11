@@ -14,6 +14,7 @@ public interface CreateTableQueries {
             	PersonID int,
                 AttributeName varchar(255),
                 AttributeValue varchar(255),
+                DateCreated DATETIME(6),
                 FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
             );
             """;
@@ -38,38 +39,24 @@ public interface CreateTableQueries {
                 FOREIGN KEY (Partner1) REFERENCES Persons(PersonID),
                 FOREIGN KEY (Partner2) REFERENCES Persons(PersonID)
             );""";
-    String LOCATION = """
-            CREATE TABLE IF NOT EXISTS Location (
-                LocationID int NOT NULL AUTO_INCREMENT,
-                LocationName varchar(255),
-                City varchar(255),
-                Province varchar(255),
-                Country varchar(255),
-                PRIMARY KEY (LocationID)
-            );""";
     String MEDIA = """
             CREATE TABLE IF NOT EXISTS Media (
                 MediaID int NOT NULL AUTO_INCREMENT,
                 FileLocation varchar(255) NOT NULL,
                 CaptureDate DATETIME(6),
-                LocationID int,
-                PRIMARY KEY (MediaID),
-                FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
+                PRIMARY KEY (MediaID)
             );""";
-    String MEDIA_TAGS = """
-            CREATE TABLE IF NOT EXISTS MediaTags (
-                TagID int NOT NULL AUTO_INCREMENT,
-                MediaID int,
-                Tag varchar(255),
-                PRIMARY KEY (TagID),
+    String MEDIA_RELATIONS = """
+            CREATE TABLE MediaAttributes (
+              	MediaID int,
+                AttributeName varchar(255),
+                AttributeValue varchar(255),
                 FOREIGN KEY (MediaID) REFERENCES Media(MediaID)
             );""";
     String MEDIA_PERSONS = """
             CREATE TABLE IF NOT EXISTS MediaPersons (
-                MediaPersonID int NOT NULL AUTO_INCREMENT,
                 MediaID int,
                 PersonID int,
-                PRIMARY KEY (MediaPersonID),
                 FOREIGN KEY (MediaID) REFERENCES Media(MediaID),
                 FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
             );""";

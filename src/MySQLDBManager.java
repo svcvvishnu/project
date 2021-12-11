@@ -1,6 +1,10 @@
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MySQLDBManager {
 
@@ -29,9 +33,8 @@ public class MySQLDBManager {
         stmt.executeUpdate(CreateTableQueries.PARENT_CHILD_RELATIONS);
         stmt.executeUpdate(CreateTableQueries.MARRIED_RELATIONS);
         stmt.executeUpdate(CreateTableQueries.DIVORCE_RELATIONS);
-        stmt.executeUpdate(CreateTableQueries.LOCATION);
         stmt.executeUpdate(CreateTableQueries.MEDIA);
-        stmt.executeUpdate(CreateTableQueries.MEDIA_TAGS);
+        stmt.executeUpdate(CreateTableQueries.MEDIA_RELATIONS);
         stmt.executeUpdate(CreateTableQueries.MEDIA_PERSONS);
         stmt.close();
     }
@@ -95,6 +98,18 @@ public class MySQLDBManager {
             PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_PERSON_TABLE);
             ps1.setString(1, field.name());
             ps1.setString(2,value);
+            return ps1.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int updatePersonMetadata(PersonFields field, Date value) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_PERSON_TABLE);
+            ps1.setString(1, field.name());
+            ps1.setDate(2, value);
             return ps1.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -292,5 +307,83 @@ public class MySQLDBManager {
             return media;
         }
         return media;
+    }
+
+    public List<Integer> getMediaWithPeople(List<Integer> ids, String startDate, String endDate) {
+        List<Integer> media = new ArrayList<>();
+        try {
+            StringBuilder sql = new StringBuilder(SelectQueries.MEDIA_WITH_PERSONS);
+            if (startDate == null || startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
+            if (endDate == null || endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
+            PreparedStatement ps1 = connection.prepareStatement(sql.toString());
+            ps1.setArray(1, ps1.getConnection().createArrayOf("int", new Object[]{ids}));
+            appendDateCondition(ps1,startDate, endDate, 2);
+            ResultSet rs =  ps1.executeQuery();
+            while (rs.next()) {
+                media.add(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            return media;
+        }
+        return media;
+    }
+
+    public Set<Integer> getMediaWithAttribute(String attributeName, String attributeValue, String startDate, String endDate) {
+        Set<Integer> media = new HashSet<>();
+        try {
+            StringBuilder sql = new StringBuilder(SelectQueries.MEDIA_WITH_LOCATION);
+            if (startDate == null || startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
+            if (endDate == null || endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
+            PreparedStatement ps1 = connection.prepareStatement(sql.toString());
+            ps1.setString(1, attributeName);
+            ps1.setString(2, attributeValue);
+            appendDateCondition(ps1,startDate, endDate, 2);
+            ResultSet rs =  ps1.executeQuery();
+            while (rs.next()) {
+                media.add(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            return media;
+        }
+        return media;
+    }
+
+    private void appendDateCondition(PreparedStatement ps, String startDate, String endDate, int index) {
+        if (startDate == null || startDate.equals("")){
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+            try {
+                java.util.Date utilDate = format.parse(startDate);
+                ps.setDate(index, new java.sql.Date(utilDate.getTime()));
+                index++;
+            } catch (ParseException | SQLException e) {
+                throw new RuntimeException("Invalid date exception");
+            }
+        }
+
+        if (endDate == null || endDate.equals("")){
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+            try {
+                java.util.Date utilDate = format.parse(endDate);
+                ps.setDate(index, new java.sql.Date(utilDate.getTime()));
+            } catch (ParseException | SQLException e) {
+                throw new RuntimeException("Invalid date exception");
+            }
+        }
+    }
+
+    public List<String> getNotesAndReferences() {
+        List<String> result = new ArrayList<>();
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(SelectQueries.ORDERED_NOTES_REFERENCES);
+            ResultSet rs =  ps1.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            return result;
+        }
+        return result;
     }
 }

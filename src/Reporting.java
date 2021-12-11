@@ -26,32 +26,32 @@ public class Reporting {
         return dbManager.getMediaFile(id);
     }
 
-    BiologicalRelation findRelation(PersonIdentity person1, PersonIdentity person2) {
+    BiologicalRelation findRelation(int person1, int person2) {
         return null;
     }
 
-    Set<PersonIdentity> descendents(PersonIdentity person, Integer generations) {
+    Set<Integer> descendents(int person, Integer generations) {
         return null;
     }
 
-    Set<PersonIdentity> ancestors(PersonIdentity person, Integer generations) {
+    Set<Integer> ancestors(int person, Integer generations) {
         return null;
     }
 
-    List<String> notesAndReferences(PersonIdentity person) {
+    List<String> notesAndReferences(int person) {
         return null;
     }
 
-    Set<FileIdentifier> findMediaByTag(String tag, String startDate, String endDate) {
-        return null;
+    Set<Integer> findMediaByTag(String tag, String startDate, String endDate) {
+        return dbManager.getMediaWithAttribute("Tag", tag, startDate, endDate);
     }
 
-    Set<FileIdentifier> findMediaByLocation(String location, String startDate, String endDate) {
-        return null;
+    Set<Integer> findMediaByLocation(String location, String startDate, String endDate) {
+        return dbManager.getMediaWithAttribute("Location", location, startDate, endDate);
     }
 
-    List<FileIdentifier> findIndividualsMedia(Set<PersonIdentity> people, String startDate, String endDate) {
-        return null;
+    List<Integer> findIndividualsMedia(Set<Integer> people, String startDate, String endDate) {
+        return dbManager.getMediaWithPeople(people.stream().toList(), startDate, endDate);
     }
 
     List<Integer> findBiologicalFamilyMedia(int person) {

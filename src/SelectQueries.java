@@ -21,7 +21,12 @@ public interface SelectQueries {
     String GET_LOCATION_BY_MEDIA = "select FileLocation from Media where MediaID = ?";
     String IS_MARRIED = "select 1 from MarriedRelations where Partner1 = ? OR Partner2 = ?";
     String IS_MEDIA_PERSON = "select 1 from MediaPersons where MediaID = ? OR PersonID = ?";
+    String ORDERED_NOTES_REFERENCES = "select AttributeValue from PersonAttributes where AttributeName = 'Note' OR AttributeName = 'Reference' order by DateCreated asc";
 
     String IMMEDIATE_CHILDREN = "select ChildId from ParentChildRelations where ParentId = ?";
     String ALL_PERSON_MEDIA = "select MediaID from MediaPersons where PersonID = ?";
+    String MEDIA_WITH_PERSONS = "select m.MediaID from Media m,MediaPersons mp where m.MediaID = mp.MediaID and mp.PersonID in (?) ";
+    String MEDIA_WITH_PERSONS_START = "AND m.CaptureDate > ?";
+    String MEDIA_WITH_PERSONS_END = "AND m.CaptureDate < ?";
+    String MEDIA_WITH_LOCATION = "select m.MediaID from Media m,MediaAttributes ma where m.MediaID = mp.MediaID and ma.AttributeName = ? and ma.AttributeValue = ?";
 }

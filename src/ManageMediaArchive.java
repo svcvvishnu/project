@@ -22,8 +22,15 @@ public class ManageMediaArchive {
             dbManager.addMediaRelations(id, entry.getKey(), entry.getValue());
             count++;
         }
+        if (attributes.containsKey("year") || attributes.containsKey("date") || attributes.containsKey("month")) {
+            UpdateTheDate(id);
+        }
         if (count == attributes.size()) return Boolean.TRUE;
         return Boolean.FALSE;
+    }
+
+    private void UpdateTheDate(int id) {
+
     }
 
     Boolean peopleInMedia(int id, List<Integer> people) {

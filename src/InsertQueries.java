@@ -1,8 +1,8 @@
 public interface InsertQueries {
     String PERSON = "INSERT INTO Persons(PersonName) VALUES (?)";
-    String PERSON_OCCUPATION = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue) VALUES(?, ?, ?)";
-    String PERSON_REFERENCES = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue) VALUES(?,?, ?)";
-    String PERSON_NOTES = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue) VALUES(?, ?, ?)";
+    String PERSON_OCCUPATION = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue, DateCreated) VALUES(?, ?, ?, curdate())";
+    String PERSON_REFERENCES = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue, DateCreated) VALUES(?,?, ?, curdate())";
+    String PERSON_NOTES = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue, DateCreated) VALUES(?, ?, ?, curdate())";
     String PARENT_CHILD_REL = "INSERT INTO ParentChildRelations(ParentID, ChildId) VALUES(?, ?)";
     String MARRIAGE = "INSERT INTO MarriedRelations(Partner1, Partner2) VALUES(?, ?)";
     String DISSOLUTION = "INSERT INTO DivorceRelations(Partner1, Partner2) VALUES(?, ?)";
