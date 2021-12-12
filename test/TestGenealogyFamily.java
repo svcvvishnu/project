@@ -114,12 +114,12 @@ public class TestGenealogyFamily {
     @Test
     public void testNotesAndReferences() {
         PersonIdentity p = g.addPerson("First");
-        g.recordNote(p, "Note1");
-        g.recordReference(p, "Reference1");
-        g.recordNote(p, "Note2");
-        g.recordReference(p, "Reference2");
-        g.recordReference(p, "Reference3");
-        g.recordNote(p, "Note3");
+        Assert.assertTrue(g.recordNote(p, "Note1"));
+        Assert.assertTrue(g.recordReference(p, "Reference1"));
+        Assert.assertTrue(g.recordNote(p, "Note2"));
+        Assert.assertTrue(g.recordReference(p, "Reference2"));
+        Assert.assertTrue(g.recordReference(p, "Reference3"));
+        Assert.assertTrue(g.recordNote(p, "Note3"));
 
         List<String> result = g.notesAndReferences(p);
         Assert.assertEquals(6, result.size());
@@ -136,20 +136,20 @@ public class TestGenealogyFamily {
         Map<String, String> attrs = new HashMap<>();
         FileIdentifier f = g.addMediaFile("FileLocation");
         attrs.put("date", "01-01-2019");
-        g.recordMediaAttributes(f, attrs);
-        g.tagMedia(f, "abc");
+        Assert.assertTrue(g.recordMediaAttributes(f, attrs));
+        Assert.assertTrue(g.tagMedia(f, "abc"));
 
         FileIdentifier f1 = g.addMediaFile("FileLocation1");
         attrs.clear();
         attrs.put("date", "01-01-2020");
-        g.recordMediaAttributes(f1, attrs);
-        g.tagMedia(f1, "abc");
+        Assert.assertTrue(g.recordMediaAttributes(f1, attrs));
+        Assert.assertTrue(g.tagMedia(f1, "abc"));
 
         FileIdentifier f2 = g.addMediaFile("FileLocation2");
         attrs.clear();
         attrs.put("date", "01-01-2021");
-        g.recordMediaAttributes(f2, attrs);
-        g.tagMedia(f2, "abc123");
+        Assert.assertTrue(g.recordMediaAttributes(f2, attrs));
+        Assert.assertTrue(g.tagMedia(f2, "abc123"));
 
         Assert.assertEquals(1, g.findMediaByTag("abc", "01-01-2018", "01-02-2019").size());
         Assert.assertEquals(1, g.findMediaByTag("abc", "01-01-2019", "01-02-2019").size());
@@ -238,21 +238,21 @@ public class TestGenealogyFamily {
 
         List<PersonIdentity> people = new ArrayList<>();
         people.add(p1);
-        g.peopleInMedia(f1, people);
+        Assert.assertTrue(g.peopleInMedia(f1, people));
 
         people.clear();
         people.add(p1);
         people.add(p2);
-        g.peopleInMedia(f2, people);
+        Assert.assertTrue(g.peopleInMedia(f2, people));
 
         people.clear();
         people.add(p1);
         people.add(p2);
         people.add(p3);
-        g.peopleInMedia(f3, people);
+        Assert.assertTrue(g.peopleInMedia(f3, people));
 
-        g.recordChild(p3, p1);
-        g.recordChild(p3,p2);
+        Assert.assertTrue(g.recordChild(p3, p1));
+        Assert.assertTrue(g.recordChild(p3,p2));
         List<FileIdentifier> result = g.findBiologicalFamilyMedia(p3);
         Assert.assertEquals(2, result.size());
         Assert.assertEquals(f1, result.get(0));
@@ -275,23 +275,23 @@ public class TestGenealogyFamily {
         PersonIdentity L = g.addPerson("L");
         PersonIdentity M = g.addPerson("M");
 
-        g.recordChild(J,D);
-        g.recordChild(J,I);
+        Assert.assertTrue(g.recordChild(J,D));
+        Assert.assertTrue(g.recordChild(J,I));
 
-        g.recordChild(D,A);
-        g.recordChild(D,B);
-        g.recordChild(D,C);
+        Assert.assertTrue(g.recordChild(D,A));
+        Assert.assertTrue(g.recordChild(D,B));
+        Assert.assertTrue(g.recordChild(D,C));
 
-        g.recordChild(I,G);
-        g.recordChild(I,H);
+        Assert.assertTrue(g.recordChild(I,G));
+        Assert.assertTrue(g.recordChild(I,H));
 
-        g.recordChild(G,E);
-        g.recordChild(G,F);
+        Assert.assertTrue(g.recordChild(G,E));
+        Assert.assertTrue(g.recordChild(G,F));
 
-        g.recordChild(M,I);
-        g.recordChild(M,L);
+        Assert.assertTrue(g.recordChild(M,I));
+        Assert.assertTrue(g.recordChild(M,L));
 
-        g.recordChild(L,K);
+        Assert.assertTrue(g.recordChild(L,K));
 
 
         Assert.assertEquals(new BiologicalRelation(0,0), g.findRelation(A, B));
