@@ -1,5 +1,9 @@
 import java.util.Objects;
 
+/**
+ * Class to store the biological relation
+ * If there is no relation then cousinShip and removal are set to -10.
+ */
 public class BiologicalRelation {
     int cousinShip;
     int removal;
@@ -7,14 +11,6 @@ public class BiologicalRelation {
     public BiologicalRelation(int cousinShip, int removal) {
         this.cousinShip = cousinShip;
         this.removal = removal;
-    }
-
-    public int getCousinShip() {
-        return this.cousinShip;
-    }
-
-    public int getRemoval() {
-        return this.removal;
     }
 
     @Override

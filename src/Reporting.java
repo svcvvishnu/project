@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * To manage the reporting functions.
+ */
 public class Reporting {
 
     MySQLDBManager dbManager;

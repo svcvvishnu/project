@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * DB Manager to connect to MySQL Database
+ */
 public class MySQLDBManager {
 
     Connection connection;

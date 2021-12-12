@@ -1,3 +1,6 @@
+/**
+ * To store all the Create table queries.
+ */
 public interface CreateTableQueries {
     String PERSONS = """
             CREATE TABLE IF NOT EXISTS Persons (

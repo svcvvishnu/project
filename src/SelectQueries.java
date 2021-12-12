@@ -1,3 +1,6 @@
+/**
+ * To store all the Select queries.
+ */
 public interface SelectQueries {
     String PARENT_CHILD_REL = """
             with recursive cte (ParentID, ChildId) as (

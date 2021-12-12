@@ -1,3 +1,6 @@
+/**
+ * To store all the Insert queries.
+ */
 public interface InsertQueries {
     String PERSON = "INSERT INTO Persons(PersonName) VALUES (?)";
     String PERSON_OCCUPATION = "INSERT INTO PersonAttributes(PersonID, AttributeName, AttributeValue, DateCreated) VALUES(?, ?, ?, curdate())";

@@ -1,5 +1,8 @@
 import java.util.Map;
 
+/**
+ * TO manage the Family Tree.
+ */
 public class ManageFamilyTree {
     MySQLDBManager dbManager;
 

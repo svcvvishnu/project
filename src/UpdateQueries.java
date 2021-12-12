@@ -1,3 +1,6 @@
+/**
+ * To store all the Update queries.
+ */
 public interface UpdateQueries {
     String RECURSIVE = """
             with recursive cte (ParentID, ChildId) as (

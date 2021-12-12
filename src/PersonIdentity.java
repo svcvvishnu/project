@@ -1,5 +1,8 @@
 import java.util.Objects;
 
+/**
+ * Unique Identifier to the Person.
+ */
 public class PersonIdentity {
     int id;
     public PersonIdentity(int id) {

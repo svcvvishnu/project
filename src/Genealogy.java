@@ -1,6 +1,8 @@
-import java.io.File;
 import java.util.*;
 
+/**
+ * Main class to store the change and perform the required logic.
+ */
 public class Genealogy {
 
     MySQLDBManager mgr;
@@ -8,6 +10,7 @@ public class Genealogy {
     ManageMediaArchive media;
     Reporting report;
 
+    //Constructor
     public Genealogy() {
         mgr = new MySQLDBManager();
         family = new ManageFamilyTree(mgr);
@@ -15,7 +18,7 @@ public class Genealogy {
         report = new Reporting(mgr);
     }
 
-    //Family Tree
+    //All methods to manage the Family Tree
     public PersonIdentity addPerson(String name) {
         return new PersonIdentity(family.addPerson(name));
     }
@@ -45,7 +48,7 @@ public class Genealogy {
     }
 
 
-    //Media
+    //All methods to manage the Media Archive
     public FileIdentifier addMediaFile(String fileLocation) {
         return new FileIdentifier(media.addMediaFile(fileLocation));
     }
@@ -67,7 +70,7 @@ public class Genealogy {
         return media.tagMedia(fileIdentifier.getId(), tag);
     }
 
-    //Reporting
+    //All methods to related to reporting.
     public PersonIdentity findPerson(String name) {
         int id = report.findPerson(name);
         if (id == -1) throw new RuntimeException("Person Not Found");
@@ -197,6 +200,11 @@ public class Genealogy {
         return ids.stream().toList();
     }
 
+    /**
+     * Return the Biological Media of the family for given person.
+     * @param personIdentity
+     * @return
+     */
     public List<FileIdentifier> findBiologicalFamilyMedia(PersonIdentity personIdentity) {
         Set<FileIdentifier> ids = new HashSet<>();
         for (Integer id : report.findBiologicalFamilyMedia(personIdentity.getId())) {

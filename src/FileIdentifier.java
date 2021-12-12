@@ -1,5 +1,8 @@
 import java.util.Objects;
 
+/**
+ * File Identifier class, to store the unique ID of the Media File.
+ */
 public class FileIdentifier {
     int id;
     public FileIdentifier(int id) {

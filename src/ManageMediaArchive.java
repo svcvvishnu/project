@@ -1,7 +1,9 @@
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * To Manage the Media Archive.
+ */
 public class ManageMediaArchive {
     MySQLDBManager dbManager;
 
