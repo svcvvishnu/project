@@ -8,6 +8,6 @@ public interface InsertQueries {
     String DISSOLUTION = "INSERT INTO DivorceRelations(Partner1, Partner2) VALUES(?, ?)";
 
     String MEDIA = "INSERT INTO Media(FileLocation) VALUES (?)";
-    String MEDIA_ATTR = "INSERT INTO MediaAttributes(PersonID, AttributeName, AttributeValue) VALUES(?, ?, ?)";
+    String MEDIA_ATTR = "INSERT INTO MediaAttributes(MediaID, AttributeName, AttributeValue) VALUES(?, ?, ?)";
     String MEDIA_PERSON = "INSERT INTO MediaPersons(MediaID, PersonID) VALUES(?, ?)";
 }

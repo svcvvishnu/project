@@ -43,7 +43,7 @@ public interface CreateTableQueries {
             CREATE TABLE IF NOT EXISTS Media (
                 MediaID int NOT NULL AUTO_INCREMENT,
                 FileLocation varchar(255) NOT NULL,
-                CaptureDate DATETIME(6),
+                CaptureDate DATETIME,
                 PRIMARY KEY (MediaID)
             );""";
     String MEDIA_RELATIONS = """

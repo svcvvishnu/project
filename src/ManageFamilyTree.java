@@ -21,15 +21,15 @@ public class ManageFamilyTree {
         for (var entry : attributes.entrySet()) {
             switch (entry.getKey()) {
                 case "DOB" -> {
-                    dbManager.updatePersonMetadata(getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOB);
+                    dbManager.updatePersonMetadata(person_id, getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOB);
                     count++;
                 }
                 case "DOD" -> {
-                    dbManager.updatePersonMetadata(getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOD);
+                    dbManager.updatePersonMetadata(person_id, getDate(entry.getValue()), UpdateQueries.UPDATE_PERSON_DOD);
                     count++;
                 }
                 case "Gender" -> {
-                    dbManager.updatePersonMetadata(entry.getValue(), UpdateQueries.UPDATE_PERSON_GENDER);
+                    dbManager.updatePersonMetadata(person_id, entry.getValue(), UpdateQueries.UPDATE_PERSON_GENDER);
                     count++;
                 }
                 case "Occupation" -> {

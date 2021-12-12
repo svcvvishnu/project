@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Reporting {
 
@@ -31,15 +28,39 @@ public class Reporting {
     }
 
     Set<Integer> descendents(int person, Integer generations) {
-        return null;
+        Set<Integer> result = new HashSet<>();
+        List<Integer> persons = new ArrayList<>();
+        persons.add(person);
+        for (int i = 1; i<=generations && persons.size() != 0; i++) {
+            List<Integer> temp = new ArrayList<>();
+            for (Integer p : persons) {
+                temp.addAll(dbManager.getImmediateChildren(p));
+            }
+            result.addAll(temp);
+            persons.clear();
+            persons.addAll(temp);
+        }
+        return result;
     }
 
     Set<Integer> ancestors(int person, Integer generations) {
-        return null;
+        Set<Integer> result = new HashSet<>();
+        List<Integer> persons = new ArrayList<>();
+        persons.add(person);
+        for (int i = 1; i<=generations && persons.size() != 0; i++) {
+            List<Integer> temp = new ArrayList<>();
+            for (Integer p : persons) {
+                temp.addAll(dbManager.getImmediateParents(p));
+            }
+            result.addAll(temp);
+            persons.clear();
+            persons.addAll(temp);
+        }
+        return result;
     }
 
     List<String> notesAndReferences(int person) {
-        return null;
+        return dbManager.getNotesAndReferences(person);
     }
 
     Set<Integer> findMediaByTag(String tag, String startDate, String endDate) {

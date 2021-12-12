@@ -93,10 +93,11 @@ public class MySQLDBManager {
         return null;
     }
 
-    public int updatePersonMetadata(String value, String query) {
+    public int updatePersonMetadata(int personId, String value, String query) {
         try {
             PreparedStatement ps1 = connection.prepareStatement(query);
             ps1.setString(1, value);
+            ps1.setInt(2, personId);
             return ps1.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -154,6 +155,22 @@ public class MySQLDBManager {
         }
         return children;
     }
+
+    public List<Integer> getImmediateParents(int childId) {
+        List<Integer> children = new ArrayList<>();
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(SelectQueries.IMMEDIATE_PARENT);
+            ps1.setInt(1, childId);
+            ResultSet rs =  ps1.executeQuery();
+            while (rs.next()) {
+                children.add(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            return children;
+        }
+        return children;
+    }
+
     public boolean isMarried(int partnerId) {
         try {
             PreparedStatement ps1 = connection.prepareStatement(SelectQueries.IS_MARRIED);
@@ -243,6 +260,20 @@ public class MySQLDBManager {
         }
         return -1;
     }
+    public int updateMediaRelationsDate(int id, String attr, String value) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.UPDATE_MEDIA_ATTR_DATE);
+            ps1.setString(1, attr);
+            ps1.setInt(2, id);
+            ps1.setString(3,value);
+            if (ps1.executeUpdate() == 1) return 1;
+            addMediaRelations(id, attr, value);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 
     public int addMediaPersons(int media_id, int person_id) {
         try {
@@ -319,12 +350,14 @@ public class MySQLDBManager {
         Set<Integer> media = new HashSet<>();
         try {
             StringBuilder sql = new StringBuilder(SelectQueries.MEDIA_WITH_LOCATION);
-            if (startDate == null || startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
-            if (endDate == null || endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
+            if (startDate != null && !startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
+            if (endDate != null && !endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
             PreparedStatement ps1 = connection.prepareStatement(sql.toString());
             ps1.setString(1, attributeName);
             ps1.setString(2, attributeValue);
-            appendDateCondition(ps1,startDate, endDate, 2);
+            int index = 3;
+            if (startDate != null && !startDate.equals("")) ps1.setString(index++, startDate);
+            if (endDate != null && !endDate.equals("")) ps1.setString(index, endDate);
             ResultSet rs =  ps1.executeQuery();
             while (rs.next()) {
                 media.add(rs.getInt(1));
@@ -335,6 +368,24 @@ public class MySQLDBManager {
         return media;
     }
 
+    public boolean updateMediaDate(int id) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(SelectQueries.MEDIA_DATE_ATTRIBUTE);
+            ps1.setInt(1, id);
+            ResultSet rs =  ps1.executeQuery();
+            if (rs.next()) {
+                String date = rs.getString(1);
+                ps1 = connection.prepareStatement(UpdateQueries.UPDATE_MEDIA_DATE);
+                ps1.setString(1, date);
+                ps1.setInt(2, id);
+                ps1.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            return false;
+        }
+        return false;
+    }
     private void appendDateCondition(PreparedStatement ps, String startDate, String endDate, int index) {
         if (startDate == null || startDate.equals("")){
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
@@ -360,10 +411,11 @@ public class MySQLDBManager {
         }
     }
 
-    public List<String> getNotesAndReferences() {
+    public List<String> getNotesAndReferences(int personId) {
         List<String> result = new ArrayList<>();
         try {
             PreparedStatement ps1 = connection.prepareStatement(SelectQueries.ORDERED_NOTES_REFERENCES);
+            ps1.setInt(1, personId);
             ResultSet rs =  ps1.executeQuery();
             while (rs.next()) {
                 result.add(rs.getString(1));

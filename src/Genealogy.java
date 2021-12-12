@@ -69,19 +69,27 @@ public class Genealogy {
 
     //Reporting
     public PersonIdentity findPerson(String name) {
-        return new PersonIdentity(report.findPerson(name));
+        int id = report.findPerson(name);
+        if (id == -1) throw new RuntimeException("Person Not Found");
+        return new PersonIdentity(id);
     }
 
     public FileIdentifier findMediaFIle(String name) {
-        return new FileIdentifier(report.findMediaFile(name));
+        int id = report.findMediaFile(name);
+        if (id == -1) throw new RuntimeException("File Not Found");
+        return new FileIdentifier(id);
     }
 
     public String findName(PersonIdentity personIdentity) {
-        return report.findName(personIdentity.getId());
+        String name = report.findName(personIdentity.getId());
+        if (name == null) throw new RuntimeException("Person Identity incorrect");
+        return name;
     }
 
     public String findMediaFile(FileIdentifier fileIdentifier) {
-        return report.findMediaFile(fileIdentifier.getId());
+        String name = report.findMediaFile(fileIdentifier.getId());
+        if (name == null) throw new RuntimeException("Person Identity incorrect");
+        return name;
     }
 
     public BiologicalRelation findRelation(PersonIdentity id1, PersonIdentity id2) {
@@ -104,7 +112,7 @@ public class Genealogy {
         return ids;
     }
 
-    public List<String> notesNAndReferences(PersonIdentity personIdentity) {
+    public List<String> notesAndReferences(PersonIdentity personIdentity) {
         return report.notesAndReferences(personIdentity.getId());
     }
 

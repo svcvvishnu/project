@@ -21,12 +21,14 @@ public interface SelectQueries {
     String GET_LOCATION_BY_MEDIA = "select FileLocation from Media where MediaID = ?";
     String IS_MARRIED = "select 1 from MarriedRelations where Partner1 = ? OR Partner2 = ?";
     String IS_MEDIA_PERSON = "select 1 from MediaPersons where MediaID = ? OR PersonID = ?";
-    String ORDERED_NOTES_REFERENCES = "select AttributeValue from PersonAttributes where AttributeName = 'Note' OR AttributeName = 'Reference' order by DateCreated asc";
+    String ORDERED_NOTES_REFERENCES = "select AttributeValue from PersonAttributes where PersonID = ? AND AttributeName = 'Note' OR AttributeName = 'Reference' order by DateCreated asc";
 
     String IMMEDIATE_CHILDREN = "select ChildId from ParentChildRelations where ParentId = ?";
+    String IMMEDIATE_PARENT = "select ParentId from ParentChildRelations where ChildId = ?";
     String ALL_PERSON_MEDIA = "select MediaID from MediaPersons where PersonID = ?";
     String MEDIA_WITH_PERSONS = "select m.MediaID from Media m,MediaPersons mp where m.MediaID = mp.MediaID and mp.PersonID in (?) ";
-    String MEDIA_WITH_PERSONS_START = "AND m.CaptureDate > ?";
-    String MEDIA_WITH_PERSONS_END = "AND m.CaptureDate < ?";
-    String MEDIA_WITH_LOCATION = "select m.MediaID from Media m,MediaAttributes ma where m.MediaID = mp.MediaID and ma.AttributeName = ? and ma.AttributeValue = ?";
+    String MEDIA_WITH_PERSONS_START = "AND m.CaptureDate >= STR_TO_DATE(?, '%m-%d-%Y')";
+    String MEDIA_WITH_PERSONS_END = "AND m.CaptureDate <= STR_TO_DATE(?, '%m-%d-%Y')";
+    String MEDIA_WITH_LOCATION = "select m.MediaID from Media m,MediaAttributes ma where m.MediaID = ma.MediaID and ma.AttributeName = ? and ma.AttributeValue = ?";
+    String MEDIA_DATE_ATTRIBUTE = "select AttributeValue from MediaAttributes where MediaID = ? AND AttributeName = 'date'";
 }
