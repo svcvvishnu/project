@@ -20,7 +20,4 @@ public interface UpdateQueries {
     String UPDATE_PERSON_DOD = "update Persons set DOD = STR_TO_DATE(?, '%m-%d-%Y') where PersonID = ?";
     String UPDATE_MEDIA_ATTR_DATE = "update MediaAttributes set AttributeValue = ? where MediaID = ? AND AttributeName = ?";
     String UPDATE_MEDIA_DATE = "update Media set CaptureDate = STR_TO_DATE(?, '%m-%d-%Y') where MediaID = ?";
-    String UPDATE_PERSON_OCCUPATION = "insert PersonOccupations set select PersonName from Persons where PersonID = ?";
-    String GET_MEDIA_BY_LOCATION = "select MediaID from Media where FileLocation = ?";
-    String GET_LOCATION_BY_MEDIA = "select FileLocation from Media where MediaID = ?";
 }

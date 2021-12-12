@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 
 public class MySQLDBManager {
 
-    enum PersonFields
-    {
-        DOB, DOD, GENDER;
-    }
     Connection connection;
 
     public MySQLDBManager() {
