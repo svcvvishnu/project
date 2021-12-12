@@ -26,7 +26,7 @@ public interface SelectQueries {
     String IMMEDIATE_CHILDREN = "select ChildId from ParentChildRelations where ParentId = ?";
     String IMMEDIATE_PARENT = "select ParentId from ParentChildRelations where ChildId = ?";
     String ALL_PERSON_MEDIA = "select MediaID from MediaPersons where PersonID = ?";
-    String MEDIA_WITH_PERSONS = "select m.MediaID from Media m,MediaPersons mp where m.MediaID = mp.MediaID and mp.PersonID in (?) ";
+    String MEDIA_WITH_PERSONS = "select m.MediaID from Media m,MediaPersons mp where m.MediaID = mp.MediaID and mp.PersonID = ? ";
     String MEDIA_WITH_PERSONS_START = "AND m.CaptureDate >= STR_TO_DATE(?, '%m-%d-%Y')";
     String MEDIA_WITH_PERSONS_END = "AND m.CaptureDate <= STR_TO_DATE(?, '%m-%d-%Y')";
     String MEDIA_WITH_LOCATION = "select m.MediaID from Media m,MediaAttributes ma where m.MediaID = ma.MediaID and ma.AttributeName = ? and ma.AttributeValue = ?";

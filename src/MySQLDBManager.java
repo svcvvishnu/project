@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MySQLDBManager {
 
@@ -327,15 +328,47 @@ public class MySQLDBManager {
         return media;
     }
 
-    public List<Integer> getMediaWithPeople(List<Integer> ids, String startDate, String endDate) {
+    public List<Integer> getMediaWithPeople(Integer id, String startDate, String endDate) {
         List<Integer> media = new ArrayList<>();
         try {
             StringBuilder sql = new StringBuilder(SelectQueries.MEDIA_WITH_PERSONS);
-            if (startDate == null || startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
-            if (endDate == null || endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
+            if (startDate != null && !startDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_START);
+            if (endDate != null && !endDate.equals("")) sql.append(SelectQueries.MEDIA_WITH_PERSONS_END);
             PreparedStatement ps1 = connection.prepareStatement(sql.toString());
-            ps1.setArray(1, ps1.getConnection().createArrayOf("int", new Object[]{ids}));
-            appendDateCondition(ps1,startDate, endDate, 2);
+            ps1.setInt(1, id);
+            int index = 2;
+            if (startDate != null && !startDate.equals("")) ps1.setString(index++, startDate);
+            if (endDate != null && !endDate.equals("")) ps1.setString(index, endDate);
+            ResultSet rs =  ps1.executeQuery();
+            while (rs.next()) {
+                media.add(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            return media;
+        }
+        return media;
+    }
+
+    public List<Integer> getMediaWithPeopleSort(List<Integer> ids, String startDate, String endDate) {
+        List<Integer> media = new ArrayList<>();
+        List<String> temp = new ArrayList<>();
+        for (Integer id : ids) {
+            temp.add(String.valueOf(id));
+        }
+        try {
+            String sql = String.format("select MediaId from Media where MediaId in (%s) order by CaptureDate asc, FileLocation asc",
+                    temp.stream()
+                            .map(v -> "?")
+                            .collect(Collectors.joining(", ")));
+            if (startDate != null && !startDate.equals("")) sql = sql + SelectQueries.MEDIA_WITH_PERSONS_START;
+            if (endDate != null && !endDate.equals("")) sql = sql + SelectQueries.MEDIA_WITH_PERSONS_END;
+            PreparedStatement ps1 = connection.prepareStatement(sql);
+            int index= 1;
+            for (Integer id : ids) {
+                ps1.setInt(index++, id);
+            }
+            if (startDate != null && !startDate.equals("")) ps1.setString(index++, startDate);
+            if (endDate != null && !endDate.equals("")) ps1.setString(index, endDate);
             ResultSet rs =  ps1.executeQuery();
             while (rs.next()) {
                 media.add(rs.getInt(1));

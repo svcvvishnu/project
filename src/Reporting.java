@@ -72,15 +72,15 @@ public class Reporting {
     }
 
     List<Integer> findIndividualsMedia(Set<Integer> people, String startDate, String endDate) {
-        return dbManager.getMediaWithPeople(people.stream().toList(), startDate, endDate);
+        Set<Integer> mediaIds = new HashSet<>();
+        for (Integer i : people) {
+            mediaIds.addAll(dbManager.getMediaWithPeople(i, startDate, endDate));
+        }
+        return mediaIds.stream().toList();
     }
 
     List<Integer> findBiologicalFamilyMedia(int person) {
-        List<Integer> children =  dbManager.getImmediateChildren(person);
-        Set<Integer> mediaIds = new HashSet<>();
-        for (Integer child : children) {
-            mediaIds.addAll(dbManager.getAllPersonMedia(child));
-        }
-        return mediaIds.stream().toList();
+        Set<Integer> children = new HashSet<>(dbManager.getImmediateChildren(person));
+        return dbManager.getMediaWithPeopleSort(children.stream().toList(), null, null);
     }
 }

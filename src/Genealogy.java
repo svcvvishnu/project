@@ -93,7 +93,60 @@ public class Genealogy {
     }
 
     public BiologicalRelation findRelation(PersonIdentity id1, PersonIdentity id2) {
-        return null;
+        boolean oneMax = false;
+        boolean twoMax = false;
+        int index = 1;
+        Set<PersonIdentity> one = new HashSet<>();
+        one.add(id1);
+        Set<PersonIdentity> two = new HashSet<>();
+        two.add(id2);
+        PersonIdentity common = null;
+
+        while (!oneMax || !twoMax) {
+            Set<PersonIdentity> temp = ancestors(id1, index);
+            if (temp.size() == one.size() - 1) {
+                oneMax = true;
+            } else {
+                one.clear();
+                one.add(id1);
+                one.addAll(temp);
+            }
+
+            temp = ancestors(id2, index);
+            if (temp.size() == two.size()) {
+                twoMax = true;
+            } else {
+                two.clear();
+                two.add(id2);
+                two.addAll(temp);
+            }
+            temp.clear();
+            temp.addAll(one);
+            temp.retainAll(two);
+            if (!temp.isEmpty()) {
+                common = temp.stream().toList().get(0);
+                break;
+            }
+            index++;
+        }
+        if (common == null) return new BiologicalRelation( -10, -10);
+        int nX = 0;
+        int nY = 0;
+        for (int i=1; i<=index; i++) {
+            if (ancestors(id1, i).contains(common)) {
+                nX = i;
+                break;
+            }
+        }
+
+        for (int i=1; i<=index; i++) {
+            if (ancestors(id2, i).contains(common)) {
+                nY = i;
+                break;
+            }
+        }
+
+        return new BiologicalRelation(Math.min(nX, nY) - 1, Math.abs(nX - nY));
     }
 
     public Set<PersonIdentity> descendents(PersonIdentity personIdentity, Integer generations) {

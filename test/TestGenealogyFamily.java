@@ -3,9 +3,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class TestGenealogyFamily {
@@ -216,6 +214,92 @@ public class TestGenealogyFamily {
 
     }
 
+    @Test
+    public void testFindBiologicalFamilyMedia() {
+        PersonIdentity p1 = g.addPerson("Person1");
+        PersonIdentity p2 = g.addPerson("Person2");
+        PersonIdentity p3 = g.addPerson("Person3");
+
+        FileIdentifier f1 = g.addMediaFile("FileLocation");
+        FileIdentifier f2 = g.addMediaFile("FileLocation1");
+        FileIdentifier f3 = g.addMediaFile("FileLocation2");
+
+        Map<String, String> attrs = new HashMap<>();
+        attrs.put("date", "01-01-2019");
+        g.recordMediaAttributes(f1, attrs);
+
+        attrs.clear();
+        attrs.put("date", "01-01-2020");
+        g.recordMediaAttributes(f2, attrs);
+
+        attrs.clear();
+        attrs.put("date", "01-01-2021");
+        g.recordMediaAttributes(f3, attrs);
+
+        List<PersonIdentity> people = new ArrayList<>();
+        people.add(p1);
+        g.peopleInMedia(f1, people);
+
+        people.clear();
+        people.add(p1);
+        people.add(p2);
+        g.peopleInMedia(f2, people);
+
+        people.clear();
+        people.add(p1);
+        people.add(p2);
+        people.add(p3);
+        g.peopleInMedia(f3, people);
+
+        g.recordChild(p3, p1);
+        g.recordChild(p3,p2);
+        List<FileIdentifier> result = g.findBiologicalFamilyMedia(p3);
+        Assert.assertEquals(2, result.size());
+        Assert.assertEquals(f1, result.get(0));
+        Assert.assertEquals(f2, result.get(1));
+    }
+
+    @Test
+    public void testBiologicalRelation() {
+        PersonIdentity A = g.addPerson("A");
+        PersonIdentity B = g.addPerson("B");
+        PersonIdentity C = g.addPerson("C");
+        PersonIdentity D = g.addPerson("D");
+        PersonIdentity E = g.addPerson("E");
+        PersonIdentity F = g.addPerson("F");
+        PersonIdentity G = g.addPerson("G");
+        PersonIdentity H = g.addPerson("H");
+        PersonIdentity I = g.addPerson("I");
+        PersonIdentity J = g.addPerson("J");
+        PersonIdentity K = g.addPerson("K");
+        PersonIdentity L = g.addPerson("L");
+        PersonIdentity M = g.addPerson("M");
+
+        g.recordChild(J,D);
+        g.recordChild(J,I);
+
+        g.recordChild(D,A);
+        g.recordChild(D,B);
+        g.recordChild(D,C);
+
+        g.recordChild(I,G);
+        g.recordChild(I,H);
+
+        g.recordChild(G,E);
+        g.recordChild(G,F);
+
+        g.recordChild(M,I);
+        g.recordChild(M,L);
+
+        g.recordChild(L,K);
+
+
+        Assert.assertEquals(new BiologicalRelation(0,0), g.findRelation(A, B));
+        Assert.assertEquals(new BiologicalRelation(1,1), g.findRelation(A, E));
+        Assert.assertEquals(new BiologicalRelation(-1,3), g.findRelation(E, J));
+        Assert.assertEquals(new BiologicalRelation(0,1), g.findRelation(F, H));
+        Assert.assertEquals(new BiologicalRelation(-10,-10), g.findRelation(C, K));
+    }
     @After
     public void clean() {
         //g.cleanData();
