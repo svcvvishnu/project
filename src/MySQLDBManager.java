@@ -182,16 +182,42 @@ public class MySQLDBManager {
         }
     }
 
+    public boolean areMarried(int partner1, int partner2) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(SelectQueries.ARE_MARRIED);
+            ps1.setInt(1, partner1);
+            ps1.setInt(2, partner2);
+            ps1.setInt(3, partner1);
+            ps1.setInt(4, partner2);
+            return ps1.executeQuery().next();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean areDivorced(int partner1, int partner2) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(SelectQueries.ARE_DIVORCED);
+            ps1.setInt(1, partner1);
+            ps1.setInt(2, partner2);
+            ps1.setInt(3, partner1);
+            ps1.setInt(4, partner2);
+            return ps1.executeQuery().next();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     public boolean isMarried(int partner1, int partner2) {
         try {
             PreparedStatement ps1 = connection.prepareStatement(SelectQueries.IS_MARRIED);
             ps1.setInt(1, partner1);
             ps1.setInt(2, partner2);
-            if( ps1.executeQuery().getFetchSize() == 1) return true;
+            if( ps1.executeQuery().next()) return true;
             ps1 = connection.prepareStatement(SelectQueries.IS_MARRIED);
             ps1.setInt(1, partner2);
             ps1.setInt(2, partner1);
-            if( ps1.executeQuery().getFetchSize() == 1) return true;
+            if( ps1.executeQuery().next()) return true;
         } catch (SQLException e) {
             return false;
         }
@@ -201,6 +227,17 @@ public class MySQLDBManager {
     public boolean insertMarriage(int partner1, int partner2) {
         try {
             PreparedStatement ps1 = connection.prepareStatement(InsertQueries.MARRIAGE);
+            ps1.setInt(1, partner1);
+            ps1.setInt(2, partner2);
+            return ps1.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean deleteMarriage(int partner1, int partner2) {
+        try {
+            PreparedStatement ps1 = connection.prepareStatement(UpdateQueries.DELETE_MARRIAGE);
             ps1.setInt(1, partner1);
             ps1.setInt(2, partner2);
             return ps1.executeUpdate() == 1;

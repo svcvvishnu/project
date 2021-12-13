@@ -23,4 +23,7 @@ public interface UpdateQueries {
     String UPDATE_PERSON_DOD = "update Persons set DOD = STR_TO_DATE(?, '%m-%d-%Y') where PersonID = ?";
     String UPDATE_MEDIA_ATTR_DATE = "update MediaAttributes set AttributeValue = ? where MediaID = ? AND AttributeName = ?";
     String UPDATE_MEDIA_DATE = "update Media set CaptureDate = STR_TO_DATE(?, '%m-%d-%Y') where MediaID = ?";
+
+
+    String DELETE_MARRIAGE = "Delete from MarriedRelations where Partner1 = ? AND Partner2 = ?";
 }

@@ -32,8 +32,8 @@ public class TestGenealogyFamily {
     public void testRecordAttribute() {
         PersonIdentity p = g.addPerson("First");
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("DOB", "01/01/2001");
-        attributes.put("DOD", "12/31/2001");
+        attributes.put("DOB", "01-01-2001");
+        attributes.put("DOD", "12-31-2001");
         attributes.put("Gender", "Male");
         Assert.assertTrue(g.recordAttributes(p, attributes));
     }
@@ -135,19 +135,19 @@ public class TestGenealogyFamily {
     public void testFindMediaByTag() {
         Map<String, String> attrs = new HashMap<>();
         FileIdentifier f = g.addMediaFile("FileLocation");
-        attrs.put("date", "01-01-2019");
+        attrs.put("Date", "01-01-2019");
         Assert.assertTrue(g.recordMediaAttributes(f, attrs));
         Assert.assertTrue(g.tagMedia(f, "abc"));
 
         FileIdentifier f1 = g.addMediaFile("FileLocation1");
         attrs.clear();
-        attrs.put("date", "01-01-2020");
+        attrs.put("Date", "01-01-2020");
         Assert.assertTrue(g.recordMediaAttributes(f1, attrs));
         Assert.assertTrue(g.tagMedia(f1, "abc"));
 
         FileIdentifier f2 = g.addMediaFile("FileLocation2");
         attrs.clear();
-        attrs.put("date", "01-01-2021");
+        attrs.put("Date", "01-01-2021");
         Assert.assertTrue(g.recordMediaAttributes(f2, attrs));
         Assert.assertTrue(g.tagMedia(f2, "abc123"));
 
@@ -175,21 +175,21 @@ public class TestGenealogyFamily {
     public void testFindMediaByLocation() {
         Map<String, String> attrs = new HashMap<>();
         FileIdentifier f = g.addMediaFile("FileLocation");
-        attrs.put("date", "01-01-2019");
+        attrs.put("Date", "01-01-2019");
         attrs.put("Location", "Location1");
         g.recordMediaAttributes(f, attrs);
         g.tagMedia(f, "abc");
 
         FileIdentifier f1 = g.addMediaFile("FileLocation1");
         attrs.clear();
-        attrs.put("date", "01-01-2020");
+        attrs.put("Date", "01-01-2020");
         attrs.put("Location", "Location1");
         g.recordMediaAttributes(f1, attrs);
         g.tagMedia(f1, "abc");
 
         FileIdentifier f2 = g.addMediaFile("FileLocation2");
         attrs.clear();
-        attrs.put("date", "01-01-2021");
+        attrs.put("Date", "01-01-2021");
         attrs.put("Location", "Location2");
         g.recordMediaAttributes(f2, attrs);
         g.tagMedia(f2, "abc123");
@@ -225,15 +225,15 @@ public class TestGenealogyFamily {
         FileIdentifier f3 = g.addMediaFile("FileLocation2");
 
         Map<String, String> attrs = new HashMap<>();
-        attrs.put("date", "01-01-2019");
+        attrs.put("Date", "01-01-2019");
         g.recordMediaAttributes(f1, attrs);
 
         attrs.clear();
-        attrs.put("date", "01-01-2020");
+        attrs.put("Date", "01-01-2020");
         g.recordMediaAttributes(f2, attrs);
 
         attrs.clear();
-        attrs.put("date", "01-01-2021");
+        attrs.put("Date", "01-01-2021");
         g.recordMediaAttributes(f3, attrs);
 
         List<PersonIdentity> people = new ArrayList<>();
@@ -275,6 +275,8 @@ public class TestGenealogyFamily {
         PersonIdentity L = g.addPerson("L");
         PersonIdentity M = g.addPerson("M");
 
+        g.recordPartnering(J, M);
+
         Assert.assertTrue(g.recordChild(J,D));
         Assert.assertTrue(g.recordChild(J,I));
 
@@ -299,6 +301,23 @@ public class TestGenealogyFamily {
         Assert.assertEquals(new BiologicalRelation(-1,3), g.findRelation(E, J));
         Assert.assertEquals(new BiologicalRelation(0,1), g.findRelation(F, H));
         Assert.assertEquals(new BiologicalRelation(-10,-10), g.findRelation(C, K));
+    }
+
+    @Test
+    public void testMarriage() {
+        PersonIdentity p1 = g.addPerson("Partner1");
+        PersonIdentity p2 = g.addPerson("Partner2");
+
+        PersonIdentity p3 = g.addPerson("Child1");
+
+        Assert.assertTrue(g.recordChild(p1,p3));
+        Assert.assertFalse(g.recordChild(p2, p3));
+        g.recordPartnering(p1,p2);
+
+        Assert.assertTrue(g.recordChild(p2, p3));
+        Assert.assertTrue(g.recordDissolution(p1,p2));
+        Assert.assertFalse(g.recordChild(p2, p3));
+        Assert.assertFalse(g.recordDissolution(p1, p2));
     }
     @After
     public void clean() {

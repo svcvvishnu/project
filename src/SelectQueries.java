@@ -23,6 +23,8 @@ public interface SelectQueries {
     String GET_MEDIA_BY_LOCATION = "select MediaID from Media where FileLocation = ?";
     String GET_LOCATION_BY_MEDIA = "select FileLocation from Media where MediaID = ?";
     String IS_MARRIED = "select 1 from MarriedRelations where Partner1 = ? OR Partner2 = ?";
+    String ARE_MARRIED = "select 1 from MarriedRelations where (Partner1 = ? AND Partner2 = ?) OR (Partner2 = ? AND Partner1 = ?)";
+    String ARE_DIVORCED = "select 1 from DivorceRelations where (Partner1 = ? AND Partner2 = ?) OR (Partner2 = ? AND Partner1 = ?)";
     String IS_MEDIA_PERSON = "select 1 from MediaPersons where MediaID = ? OR PersonID = ?";
     String ORDERED_NOTES_REFERENCES = "select AttributeValue from PersonAttributes where PersonID = ? AND AttributeName = 'Note' OR AttributeName = 'Reference' order by DateCreated asc";
 

@@ -5,6 +5,14 @@ import java.util.*;
  */
 public class Genealogy {
 
+    enum PersonAttributes {
+        DOB, DOD, Gender, Occupation
+    }
+
+    enum MediaAttributes {
+        Date, Location, CITY_NAME, PROVINCE, COUNTRY, TAG
+    }
+
     MySQLDBManager mgr;
     ManageFamilyTree family;
     ManageMediaArchive media;
@@ -26,7 +34,17 @@ public class Genealogy {
     //Expects the DOB and DOD to be provided in format MM/dd/YYYY. Even if teh date or month is not know expects to leave that section blank
     //i.e 11/12/2020 or /12/2222 or //1990 are accepted formats
     public boolean recordAttributes(PersonIdentity personIdentity, Map<String, String> attributes) {
-        return family.recordAttributes(personIdentity.getId(), attributes);
+        Map<String, String> validAttributes = new HashMap<>();
+        for (var entry : attributes.entrySet()) {
+            try {
+                PersonAttributes.valueOf(entry.getKey());
+                validAttributes.put(entry.getKey(), entry.getValue());
+            } catch (IllegalArgumentException ignored) {
+                //no-op
+            }
+        }
+        return family.recordAttributes(personIdentity.getId(), validAttributes)
+                && validAttributes.size() == attributes.size();
     }
 
     public boolean recordReference(PersonIdentity personIdentity, String reference) {
@@ -56,7 +74,17 @@ public class Genealogy {
     }
 
     public boolean recordMediaAttributes(FileIdentifier fileIdentifier, Map<String, String> attributes) {
-        return media.recordMediaAttributes(fileIdentifier.getId(), attributes);
+        Map<String, String> validAttributes = new HashMap<>();
+        for (var entry : attributes.entrySet()) {
+            try {
+                MediaAttributes.valueOf(entry.getKey());
+                validAttributes.put(entry.getKey(), entry.getValue());
+            } catch (IllegalArgumentException ignored) {
+                //no-op
+            }
+        }
+        return media.recordMediaAttributes(fileIdentifier.getId(), validAttributes)
+                && validAttributes.size() == attributes.size();
     }
 
     public boolean peopleInMedia(FileIdentifier fileIdentifier, List<PersonIdentity> people) {
