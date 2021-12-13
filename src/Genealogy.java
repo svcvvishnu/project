@@ -32,7 +32,7 @@ public class Genealogy {
     }
 
     //Expects the DOB and DOD to be provided in format MM/dd/YYYY. Even if teh date or month is not know expects to leave that section blank
-    //i.e 11/12/2020 or /12/2222 or //1990 are accepted formats
+    //i.e 11-12-2020 or -12-2222 or --1990 are accepted formats
     public boolean recordAttributes(PersonIdentity personIdentity, Map<String, String> attributes) {
         Map<String, String> validAttributes = new HashMap<>();
         for (var entry : attributes.entrySet()) {
