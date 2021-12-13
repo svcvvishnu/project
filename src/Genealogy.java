@@ -10,7 +10,7 @@ public class Genealogy {
     }
 
     enum MediaAttributes {
-        Date, Location, CITY_NAME, PROVINCE, COUNTRY, TAG
+        Date, Location, City, Province, Country
     }
 
     MySQLDBManager mgr;

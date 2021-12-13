@@ -22,6 +22,18 @@ public class TestGenealogyFamily {
         Assert.assertEquals("First",g.findName(p));
     }
 
+    @Test
+    public void testAddPersonSpecialCharacters() {
+        PersonIdentity p = g.addPerson("First123");
+        Assert.assertEquals("First123",g.findName(p));
+
+        p = g.addPerson("First_%$");
+        Assert.assertEquals("First_%$",g.findName(p));
+
+        p = g.addPerson("First Name");
+        Assert.assertEquals("First Name",g.findName(p));
+    }
+
     @Test(expected = RuntimeException.class)
     public void TestDuplicatePerson() {
         g.addPerson("First");
@@ -35,6 +47,23 @@ public class TestGenealogyFamily {
         attributes.put("DOB", "01-01-2001");
         attributes.put("DOD", "12-31-2001");
         attributes.put("Gender", "Male");
+        Assert.assertTrue(g.recordAttributes(p, attributes));
+    }
+
+    @Test
+    public void testRecordAttributeOccupation() {
+        PersonIdentity p = g.addPerson("First");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("Occupation", "XYZ");
+        Assert.assertTrue(g.recordAttributes(p, attributes));
+
+        attributes.put("Occupation", "XYZ123");
+        Assert.assertTrue(g.recordAttributes(p, attributes));
+
+        attributes.put("Occupation", "XYZ_/");
+        Assert.assertTrue(g.recordAttributes(p, attributes));
+
+        attributes.put("Occupation", "XYZ ABC");
         Assert.assertTrue(g.recordAttributes(p, attributes));
     }
 
@@ -132,6 +161,24 @@ public class TestGenealogyFamily {
     }
 
     @Test
+    public void testMediaRecordAttrsCity() {
+        Map<String, String> attrs = new HashMap<>();
+        FileIdentifier f = g.addMediaFile("FileLocation");
+        attrs.put("City", "ABC");
+        Assert.assertTrue(g.recordMediaAttributes(f, attrs));
+
+        attrs.put("City", "ABC121");
+        Assert.assertTrue(g.recordMediaAttributes(f, attrs));
+
+        attrs.put("City", "ABC_");
+        Assert.assertTrue(g.recordMediaAttributes(f, attrs));
+
+        attrs.put("City", "ABC XYX");
+        Assert.assertTrue(g.recordMediaAttributes(f, attrs));
+
+    }
+
+        @Test
     public void testFindMediaByTag() {
         Map<String, String> attrs = new HashMap<>();
         FileIdentifier f = g.addMediaFile("FileLocation");

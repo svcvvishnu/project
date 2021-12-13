@@ -26,6 +26,7 @@ public class ManageFamilyTree {
      * Record the optional attributes about the Person.
      * Expectation:
      *  the date to be expected in format MM-dd-YYYY. (IF the date or month is not know leave the section blank)
+     *  Gender can be Male ,Female, M, F
      * @param person_id
      * @param attributes
      * @return
@@ -44,8 +45,11 @@ public class ManageFamilyTree {
                     count++;
                 }
                 case "Gender" -> {
-                    dbManager.updatePersonMetadata(person_id, entry.getValue(), UpdateQueries.UPDATE_PERSON_GENDER);
-                    count++;
+                    if (entry.getValue().equals("Male") || entry.getValue().equals("Female")
+                            || entry.getValue().equals("M") || entry.getValue().equals("F")) {
+                        dbManager.updatePersonMetadata(person_id, entry.getValue(), UpdateQueries.UPDATE_PERSON_GENDER);
+                        count++;
+                    }
                 }
                 case "Occupation" -> {
                     dbManager.updatePersonRelations(person_id, entry.getValue(), "Occupation", InsertQueries.PERSON_OCCUPATION);
