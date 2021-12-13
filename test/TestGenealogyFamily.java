@@ -67,8 +67,9 @@ public class TestGenealogyFamily {
         Assert.assertTrue(g.recordAttributes(p, attributes));
     }
 
+
     @Test
-    public void testUseCase1() {
+    public void testAncestorsAndDescendents() {
         PersonIdentity p = g.addPerson("First");
         PersonIdentity p1 = g.addPerson("Second");
         PersonIdentity p2 = g.addPerson("Third");
