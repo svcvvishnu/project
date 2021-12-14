@@ -123,14 +123,12 @@ public class MySQLDBManager {
             PreparedStatement ps1 = connection.prepareStatement(SelectQueries.PARENT_CHILD_REL);
             ps1.setInt(1, parentId);
             ps1.setInt(2, childId);
-            int rows =  ps1.executeQuery().getFetchSize();
-            if (rows !=0) return false;
+            if (ps1.executeQuery().next()) return false;
 
             ps1 = connection.prepareStatement(SelectQueries.PARENT_CHILD_REL);
             ps1.setInt(1, childId);
             ps1.setInt(2, parentId);
-            rows =  ps1.executeQuery().getFetchSize();
-            if (rows !=0) return false;
+            if (ps1.executeQuery().next()) return false;
 
             ps1 = connection.prepareStatement(InsertQueries.PARENT_CHILD_REL);
             ps1.setInt(1, parentId);
